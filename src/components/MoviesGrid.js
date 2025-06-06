@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import "../styles.css";
 import MovieCard from "./MovieCard";
 
-export default function MoviesGrid() {
-  const [movies, setMovies] = useState([]);
+export default function MoviesGrid({ movies }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [genre, setGenre] = useState("All genres");
   const [rating, setRating] = useState("All ratings");
@@ -44,25 +43,12 @@ export default function MoviesGrid() {
     }
   };
 
-  useEffect(() => {
-    async function fetchMovies() {
-      try {
-        const response = await fetch("movies.json");
-        const movies = await response.json();
-        const filteredMovies = movies.filter(
-          (movie) =>
-            matchesGenre(movie, genre) &&
-            matchesSearchTerm(movie, searchTerm) &&
-            matchesRating(movie, rating)
-        );
-        setMovies(filteredMovies);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    fetchMovies();
-  }, [searchTerm, genre, rating]);
+  const filteredMovies = movies.filter(
+    (movie) =>
+      matchesGenre(movie, genre) &&
+      matchesSearchTerm(movie, searchTerm) &&
+      matchesRating(movie, rating)
+  );
 
   return (
     <div>
@@ -102,7 +88,7 @@ export default function MoviesGrid() {
         </div>
       </div>
       <div className="movies-grid">
-        {movies.map((movie) => (
+        {filteredMovies.map((movie) => (
           <MovieCard key={movie.id} movie={movie} />
         ))}
       </div>
