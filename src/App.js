@@ -10,6 +10,7 @@ import Watchlist from "./components/Watchlist";
 
 function App() {
   const [movies, setMovies] = useState([]);
+  const [watchlist, setWatchlist] = useState([]);
 
   useEffect(() => {
     async function fetchMovies() {
@@ -25,6 +26,14 @@ function App() {
 
     fetchMovies();
   }, []);
+
+  const toggleWatchlist = (movieId) => {
+    setWatchlist((watchlist) => {
+      return watchlist.includes(movieId)
+        ? watchlist.filter((id) => id !== movieId)
+        : [...watchlist, movieId];
+    });
+  };
 
   return (
     <div className="App">
@@ -42,8 +51,26 @@ function App() {
             </ul>
           </nav>
           <Routes>
-            <Route path="/" element={<MoviesGrid movies={movies} />} />
-            <Route path="/watchlist" element={<Watchlist />} />
+            <Route
+              path="/"
+              element={
+                <MoviesGrid
+                  movies={movies}
+                  watchlist={watchlist}
+                  toggleWatchlist={toggleWatchlist}
+                />
+              }
+            />
+            <Route
+              path="/watchlist"
+              element={
+                <Watchlist
+                  watchlist={watchlist}
+                  toggleWatchlist={toggleWatchlist}
+                  movies={movies}
+                />
+              }
+            />
           </Routes>
         </Router>
       </div>
